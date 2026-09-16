@@ -72,6 +72,40 @@ work required.
    `isUnlocked()` normalises `"1"/"true"/true/1` defensively; worth fixing at
    the source.
 
+## Deploying to Netlify
+
+**Do not add a `_redirects` file or a catch-all `[[redirects]]` rule.** Those are
+for static sites. This app has server-rendered routes — `/api/bff/*`,
+`/api/auth/*`, `/fixtures/[id]`, `/shared/[token]` — and a catch-all redirect
+would shadow them. `netlify.toml` declares `@netlify/plugin-nextjs`, which maps
+those routes onto Netlify Functions; routing is handled for you.
+
+For the same reason this app **cannot** be statically exported. `output: "export"`
+would drop the BFF routes, and those are the whole reason the Sanctum token
+stays in an httpOnly cookie instead of in browser-readable storage.
+
+Steps:
+
+1. Push the branch and connect the repo in Netlify. Build command `next build`,
+   publish directory `.next` — already set in `netlify.toml`.
+2. In **Site settings → Environment variables**, set `PREDICTX_API_URL` to the
+   public HTTPS URL of the Laravel API, and `PREDICTX_DEVICE_NAME` to
+   `predictx-web`. Do not commit these.
+3. Redeploy.
+
+Two things that will bite otherwise:
+
+- **`localhost` will not work.** `.env.local` currently points at
+  `http://localhost:8000/api`. On Netlify that resolves to the serverless
+  function's own loopback, not your machine. The Laravel API has to be deployed
+  and publicly reachable first — that is the actual blocker, not redirects.
+- **Netlify's Next.js runtime is not a verified adapter.** Next.js 16's own docs
+  list Netlify under integrations that are "not built on the public Adapter API
+  and are not verified by the Next.js team, so feature support and compatibility
+  may vary". Next 16 is new; if the build fails on the runtime version, that is
+  why. Any Node host running `next build && next start` (Railway, Render, Fly,
+  a container) avoids the question entirely.
+
 ## Before deploying
 
 - Set `PREDICTX_API_URL` to the production API. It is server-only and

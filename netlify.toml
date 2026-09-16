@@ -1,0 +1,13 @@
+[build]
+  command = "next build"
+  publish = ".next"
+
+# Netlify's Next.js runtime maps App Router routes, Route Handlers and
+# Server Components onto Netlify Functions. Do NOT add a `_redirects` file or
+# a catch-all [[redirects]] rule: that is for static sites, and it would
+# shadow the dynamic routes this app depends on (/api/bff/*, /api/auth/*).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
