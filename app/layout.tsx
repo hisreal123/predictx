@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Providers } from "./providers";
+import { DemoBanner } from "@/components/demo-banner";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Providers>
           <TooltipProvider>
+            <DemoBanner />
             <SiteHeader />
             <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
               {children}

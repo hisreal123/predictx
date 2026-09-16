@@ -3,8 +3,10 @@ import type { NextRequest } from "next/server";
 import {
   clearToken,
   errorResponse,
+  getToken,
   upstreamFetch,
 } from "@/lib/server/upstream";
+import { DEMO_MODE, handleDemo } from "@/lib/server/demo";
 
 /**
  * Generic authenticated proxy: /api/bff/<path> -> <PREDICTX_API_URL>/<path>
@@ -34,8 +36,14 @@ async function proxy(request: NextRequest, path: string[]): Promise<Response> {
     return errorResponse("This endpoint is not available through the proxy.", 404);
   }
 
-  const search = request.nextUrl.search;
   const method = request.method;
+
+  if (DEMO_MODE) {
+    const demo = handleDemo(method, target, Boolean(await getToken()));
+    return demo ?? errorResponse("Not available in demo mode.", 404);
+  }
+
+  const search = request.nextUrl.search;
 
   const init: RequestInit = { method };
 

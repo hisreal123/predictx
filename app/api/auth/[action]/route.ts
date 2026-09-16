@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 
+import { DEMO_MODE, demoAuth } from "@/lib/server/demo";
 import {
   clearToken,
   deviceName,
@@ -33,6 +34,19 @@ export async function POST(
   ctx: RouteContext<"/api/auth/[action]">,
 ) {
   const { action } = await ctx.params;
+
+  if (DEMO_MODE) {
+    if (action === "logout") {
+      await clearToken();
+      return Response.json({ ok: true });
+    }
+    if (!isCredentialAction(action)) {
+      return errorResponse("Unknown auth action.", 404);
+    }
+    const { user, token } = demoAuth();
+    await setToken(token);
+    return Response.json({ user });
+  }
 
   if (action === "logout") {
     // Best-effort upstream revocation: even if it fails, we still drop the
