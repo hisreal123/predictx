@@ -22,6 +22,7 @@ import type {
   Prediction,
   RegisterPayload,
   SavedPrediction,
+  SharePredictionResponse,
   Subscription,
   UnlockEvent,
   UnlockPayload,
@@ -171,10 +172,11 @@ export function useCompleteAdEvent() {
 }
 
 export function useSharePrediction() {
-  return useMutation<{ share_token: string }, ApiError, number>({
+  return useMutation<SharePredictionResponse, ApiError, number>({
     mutationFn: async (predictionId) =>
-      (await api.post<{ share_token: string }>(`/v1/predictions/${predictionId}/share`))
-        .data,
+      (await api.post<SharePredictionResponse>(
+        `/v1/predictions/${predictionId}/share`,
+      )).data,
   });
 }
 

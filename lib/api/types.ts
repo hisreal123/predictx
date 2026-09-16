@@ -79,6 +79,12 @@ export interface SavedPrediction {
   fixture: Fixture;
 }
 
+/** `POST /v1/predictions/{id}/share` — the API builds the URL, we don't. */
+export interface SharePredictionResponse {
+  share_token: string;
+  share_url: string;
+}
+
 export interface Subscription {
   id: number;
   provider: string;

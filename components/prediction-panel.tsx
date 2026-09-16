@@ -66,13 +66,12 @@ export function PredictionPanel({ prediction }: { prediction: Prediction }) {
   function handleShare() {
     if (!requireAuth("share predictions")) return;
     share.mutate(prediction.id, {
-      onSuccess: async ({ share_token }) => {
-        const url = `${window.location.origin}/shared/${share_token}`;
+      onSuccess: async ({ share_url }) => {
         try {
-          await navigator.clipboard.writeText(url);
+          await navigator.clipboard.writeText(share_url);
           toast.success("Share link copied");
         } catch {
-          toast.success("Share link ready", { description: url });
+          toast.success("Share link ready", { description: share_url });
         }
       },
       onError: (error) => toast.error(error.message),
