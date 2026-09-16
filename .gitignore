@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent instruction files — `next dev` re-scaffolds these on every run
+# (node_modules/next/dist/server/lib/generate-agent-files.js, no opt-out),
+# so ignore them rather than fighting the regeneration
+AGENTS.md
+CLAUDE.md
