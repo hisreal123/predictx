@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: predictx
+    runtime: node
+    plan: free
+    # Bun version comes from .bun-version, matching local development.
+    buildCommand: bun install --frozen-lockfile && bun run build
+    # `next start` binds to $PORT, which Render sets.
+    startCommand: bun run start
+    healthCheckPath: /
+    envVars:
+      # NEXT_PUBLIC_* is inlined at build time, so this must be present for the
+      # build, not just at runtime. Set to 0 once the real API is reachable.
+      - key: NEXT_PUBLIC_PREDICTX_DEMO
+        value: "1"
+      - key: PREDICTX_DEVICE_NAME
+        value: predictx-web
+      - key: NODE_ENV
+        value: production
